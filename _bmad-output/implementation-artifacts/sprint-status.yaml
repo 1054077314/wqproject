@@ -43,15 +43,15 @@ story_location: _bmad-output/implementation-artifacts
 
 development_status:
   # Epic 1: 用户认证与基础
-  epic-1: in-progress
+  epic-1: done
   1-1-user-registration: done
-  1-2-user-login: backlog
-  1-3-get-current-user-info: backlog
+  1-2-user-login: done
+  1-3-get-current-user-info: done
   epic-1-retrospective: optional
 
   # Epic 2: 商品发布与浏览
-  epic-2: backlog
-  2-1-category-management: backlog
+  epic-2: in-progress
+  2-1-category-management: done
   2-2-publish-product: backlog
   2-3-edit-and-delete-product: backlog
   2-4-product-list-and-filter: backlog
