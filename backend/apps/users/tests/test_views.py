@@ -60,8 +60,8 @@ class LoginViewTest(TestCase):
         self.user.is_active = False
         self.user.save()
         resp = self.client.post(self.url, {"username": "testuser", "password": "123456"})
-        self.assertEqual(resp.status_code, 401)
-        self.assertEqual(resp.data["code"], 401)
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.data["code"], 403)
 
 
 class ProfileViewTest(TestCase):

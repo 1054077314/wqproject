@@ -9,3 +9,7 @@
 - `extra_kwargs` 禁用 unique 验证，依赖 DB IntegrityError — 和 users app 一致的设计决策
 - 并发删除 race condition（check-then-delete 非原子）— 低频场景，后续加事务
 - sort_order 无边界校验 — 低优先级，后续添加 min_value/max_value
+
+## Deferred from: code review of story 2-3-edit-and-delete-product (2026-05-29)
+
+- 新增图片+保留图片总数可能超过3张 — 信任客户端控制总数，后续可在 update() 中加校验

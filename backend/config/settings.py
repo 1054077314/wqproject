@@ -16,6 +16,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "apps.users",
     "apps.categories",
+    "apps.products",
+    "apps.appointments",
+    "apps.favorites",
+    "apps.comments",
 ]
 
 MIDDLEWARE = [
@@ -34,6 +38,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
     "EXCEPTION_HANDLER": "config.exception_handler.custom_exception_handler",
 }
 
@@ -59,6 +65,9 @@ DATABASES = {
 AUTH_USER_MODEL = "users.User"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 LANGUAGE_CODE = "zh-hans"
 TIME_ZONE = "Asia/Shanghai"
