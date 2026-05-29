@@ -16,7 +16,9 @@ request.interceptors.request.use((config) => {
 request.interceptors.response.use(
   (res) => res.data,
   (err) => {
-    if (err.response?.status === 401) {
+    const isLoginRequest = err.config?.url === '/login'
+    const isOnLoginPage = window.location.pathname === '/login'
+    if (err.response?.status === 401 && !isLoginRequest && !isOnLoginPage) {
       localStorage.removeItem('token')
       window.location.href = '/login'
     }

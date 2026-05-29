@@ -51,8 +51,8 @@ def login(request):
 
     if not user.is_active:
         return Response(
-            {"code": 403, "message": "账号已被禁用", "data": None},
-            status=status.HTTP_403_FORBIDDEN,
+            {"code": 401, "message": "用户名或密码错误", "data": None},
+            status=status.HTTP_401_UNAUTHORIZED,
         )
 
     token = Token.objects.create(user=user)
@@ -60,7 +60,10 @@ def login(request):
         {
             "code": 200,
             "message": "登录成功",
-            "data": {"token": token.key, "user": {"id": user.id, "username": user.username}},
+            "data": {
+                "token": token.key,
+                "user": {"id": user.id, "username": user.username, "is_staff": user.is_staff},
+            },
         },
         status=status.HTTP_200_OK,
     )
@@ -71,7 +74,11 @@ def login(request):
 def profile(request):
     user = request.user
     return Response(
-        {"code": 200, "message": "success", "data": {"id": user.id, "username": user.username}},
+        {
+            "code": 200,
+            "message": "success",
+            "data": {"id": user.id, "username": user.username, "is_staff": user.is_staff},
+        },
         status=status.HTTP_200_OK,
     )
 

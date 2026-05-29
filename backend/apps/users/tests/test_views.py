@@ -12,28 +12,28 @@ class RegisterViewTest(TestCase):
         self.url = "/api/register"
 
     def test_register_success(self):
-        resp = self.client.post(self.url, {"username": "testuser", "password": "123456"})
+        resp = self.client.post(self.url, {"username": "testuser", "password": "12345678"})
         self.assertEqual(resp.status_code, 201)
         self.assertEqual(resp.data["code"], 201)
         self.assertIn("user_id", resp.data["data"])
         self.assertTrue(User.objects.filter(username="testuser").exists())
 
     def test_register_duplicate_username(self):
-        User.objects.create_user(username="existing", password="123456")
-        resp = self.client.post(self.url, {"username": "existing", "password": "123456"})
+        User.objects.create_user(username="existing", password="12345678")
+        resp = self.client.post(self.url, {"username": "existing", "password": "12345678"})
         self.assertEqual(resp.status_code, 409)
         self.assertEqual(resp.data["code"], 409)
 
     def test_register_username_too_short(self):
-        resp = self.client.post(self.url, {"username": "ab", "password": "123456"})
+        resp = self.client.post(self.url, {"username": "ab", "password": "12345678"})
         self.assertEqual(resp.status_code, 400)
 
     def test_register_username_too_long(self):
-        resp = self.client.post(self.url, {"username": "a" * 51, "password": "123456"})
+        resp = self.client.post(self.url, {"username": "a" * 51, "password": "12345678"})
         self.assertEqual(resp.status_code, 400)
 
     def test_register_password_too_short(self):
-        resp = self.client.post(self.url, {"username": "testuser", "password": "12345"})
+        resp = self.client.post(self.url, {"username": "testuser", "password": "1234567"})
         self.assertEqual(resp.status_code, 400)
 
 
@@ -41,10 +41,10 @@ class LoginViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = "/api/login"
-        self.user = User.objects.create_user(username="testuser", password="123456")
+        self.user = User.objects.create_user(username="testuser", password="12345678")
 
     def test_login_success(self):
-        resp = self.client.post(self.url, {"username": "testuser", "password": "123456"})
+        resp = self.client.post(self.url, {"username": "testuser", "password": "12345678"})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data["code"], 200)
         self.assertIn("token", resp.data["data"])
@@ -59,16 +59,16 @@ class LoginViewTest(TestCase):
     def test_login_disabled_user(self):
         self.user.is_active = False
         self.user.save()
-        resp = self.client.post(self.url, {"username": "testuser", "password": "123456"})
-        self.assertEqual(resp.status_code, 403)
-        self.assertEqual(resp.data["code"], 403)
+        resp = self.client.post(self.url, {"username": "testuser", "password": "12345678"})
+        self.assertEqual(resp.status_code, 401)
+        self.assertEqual(resp.data["code"], 401)
 
 
 class ProfileViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = "/api/profile"
-        self.user = User.objects.create_user(username="testuser", password="123456")
+        self.user = User.objects.create_user(username="testuser", password="12345678")
         self.token = Token.objects.create(user=self.user)
 
     def test_profile_success(self):
