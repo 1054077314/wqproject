@@ -1,0 +1,7 @@
+新功能
+  ↓ /bmad:analyst    → 需求分析
+  ↓ /bmad:architect  → 出设计文档
+  ↓ /kiro:spec-init  → 拆 tasks
+  ↓ 开始写代码（superpowers 自动接管子任务）
+  ↓ /code-review     → commit 前审查
+  ↓ git push         → security-review 自动触发
