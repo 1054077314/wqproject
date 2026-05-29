@@ -1,10 +1,10 @@
-from django.contrib.auth import authenticate
+from django.db import IntegrityError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Token, User
+from .models import Token
 from .serializers import RegisterSerializer, LoginSerializer
 
 
@@ -13,10 +13,13 @@ from .serializers import RegisterSerializer, LoginSerializer
 def register(request):
     ser = RegisterSerializer(data=request.data)
     ser.is_valid(raise_exception=True)
-    user = User.objects.create_user(
-        username=ser.validated_data["username"],
-        password=ser.validated_data["password"],
-    )
+    try:
+        user = ser.save()
+    except IntegrityError:
+        return Response(
+            {"code": 409, "message": "用户名已存在", "data": None},
+            status=status.HTTP_409_CONFLICT,
+        )
     return Response(
         {"code": 201, "message": "注册成功", "data": {"user_id": user.id}},
         status=status.HTTP_201_CREATED,
@@ -29,22 +32,16 @@ def login(request):
     ser = LoginSerializer(data=request.data)
     ser.is_valid(raise_exception=True)
 
-    # 先检查用户是否存在且活跃，再验证密码
     try:
+        from .models import User
         user = User.objects.get(username=ser.validated_data["username"])
-    except User.DoesNotExist:
+    except Exception:
         return Response(
             {"code": 401, "message": "用户名或密码错误", "data": None},
             status=status.HTTP_401_UNAUTHORIZED,
         )
 
-    if not user.is_active:
-        return Response(
-            {"code": 403, "message": "账号已禁用", "data": None},
-            status=status.HTTP_403_FORBIDDEN,
-        )
-
-    if not user.check_password(ser.validated_data["password"]):
+    if not user.is_active or not user.check_password(ser.validated_data["password"]):
         return Response(
             {"code": 401, "message": "用户名或密码错误", "data": None},
             status=status.HTTP_401_UNAUTHORIZED,

@@ -44,7 +44,7 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   # Epic 1: 用户认证与基础
   epic-1: in-progress
-  1-1-user-registration: review
+  1-1-user-registration: done
   1-2-user-login: backlog
   1-3-get-current-user-info: backlog
   epic-1-retrospective: optional

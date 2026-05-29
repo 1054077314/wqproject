@@ -21,8 +21,8 @@ class RegisterViewTest(TestCase):
     def test_register_duplicate_username(self):
         User.objects.create_user(username="existing", password="123456")
         resp = self.client.post(self.url, {"username": "existing", "password": "123456"})
-        self.assertEqual(resp.status_code, 400)
-        self.assertEqual(resp.data["code"], 400)
+        self.assertEqual(resp.status_code, 409)
+        self.assertEqual(resp.data["code"], 409)
 
     def test_register_username_too_short(self):
         resp = self.client.post(self.url, {"username": "ab", "password": "123456"})
@@ -60,8 +60,8 @@ class LoginViewTest(TestCase):
         self.user.is_active = False
         self.user.save()
         resp = self.client.post(self.url, {"username": "testuser", "password": "123456"})
-        self.assertEqual(resp.status_code, 403)
-        self.assertEqual(resp.data["code"], 403)
+        self.assertEqual(resp.status_code, 401)
+        self.assertEqual(resp.data["code"], 401)
 
 
 class ProfileViewTest(TestCase):

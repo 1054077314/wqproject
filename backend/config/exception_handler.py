@@ -1,17 +1,20 @@
 from rest_framework.views import exception_handler
 from rest_framework.response import Response
-from rest_framework.exceptions import NotAuthenticated, PermissionDenied
+from rest_framework import status as http_status
 
 
 def custom_exception_handler(exc, context):
     resp = exception_handler(exc, context)
+
     if resp is None:
-        return None
+        return Response(
+            {"code": 500, "message": "服务器内部错误", "data": None},
+            status=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     code = resp.status_code
     message = _extract_message(resp.data)
 
-    # DRF 默认对未认证用户返回 403，改为 401
     if code == 403 and not _is_authenticated(context):
         code = 401
 

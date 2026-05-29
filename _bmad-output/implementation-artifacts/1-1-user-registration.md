@@ -4,7 +4,7 @@ baseline_commit: NO_VCS
 
 # Story 1.1: 用户注册
 
-Status: review
+Status: done
 
 ## Story
 
@@ -136,6 +136,17 @@ backend/apps/users/
 - [Source: _bmad-output/planning-artifacts/architecture.md#Testing Standards] — 测试规范
 - [Source: CLAUDE.md#模块规范] — views 禁止直接操作数据库
 
+### Review Findings
+
+- [x] [Review][Patch] 重复用户名返回 400 而非 409，并发注册会 500 [views.py:14-17] — 移除 serializer 重复检查，DB 约束 + IntegrityError 返回 409
+- [x] [Review][Patch] views 直接操作数据库，违反架构规范 [views.py:12-36] — RegisterSerializer 加 create() 方法
+- [x] [Review][Patch] 登录用户枚举：禁用用户 403 泄露账号存在性 [views.py:36-40] — 禁用用户和密码错误统一返回 401
+- [x] [Review][Patch] exception_handler 对非 DRF 异常返回非标准 500 [exception_handler.py:9-10] — 返回标准格式 500
+- [x] [Review][Patch] `authenticate` import 未使用 [views.py:1] — 已删除
+- [x] [Review][Defer] 无过期 token 清理机制 — deferred, pre-existing
+- [x] [Review][Defer] 无登录限流/暴力破解保护 — deferred, not in AC
+- [x] [Review][Defer] 无登出/token 撤销机制 — deferred, not in AC
+
 ## Dev Agent Record
 
 ### Agent Model Used
@@ -154,7 +165,7 @@ Claude (mimo-v2.5-pro)
 - Task 3: profile 接口响应改为标准格式
 - Task 4: 创建 12 个测试用例，覆盖注册（成功、重复、字段校验）、登录（成功、密码错误、禁用用户）、profile（成功、无token、无效token、过期token）
 - 新增 `config/exception_handler.py` 统一 DRF 错误响应格式
-- 新增 `apps/users/permissions.py`（已删除，改用异常处理器方案）
+- Code review 修复：重复用户名 409（IntegrityError catch）、views 走 serializer create()、禁用用户统一 401 防枚举、异常处理器 500 标准格式、删除未用 import
 
 ### File List
 
