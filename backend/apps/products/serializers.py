@@ -89,6 +89,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
     appointment_count = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
+    is_appointed = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -96,6 +97,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             "id", "title", "description", "price", "images",
             "category_name", "contact_info", "status", "created_at",
             "seller_username", "comments", "appointment_count", "is_favorited",
+            "is_appointed",
         ]
 
     def get_comments(self, obj):
@@ -125,6 +127,16 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         except ImportError:
             return False
         return Favorite.objects.filter(user=request.user, product=obj).exists()
+
+    def get_is_appointed(self, obj):
+        request = self.context.get("request")
+        if not request or not request.user or not request.user.is_authenticated:
+            return False
+        try:
+            from apps.appointments.models import Appointment
+        except ImportError:
+            return False
+        return Appointment.objects.filter(buyer=request.user, product=obj).exists()
 
 
 class MyProductSerializer(serializers.ModelSerializer):

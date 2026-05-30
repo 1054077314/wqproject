@@ -47,6 +47,7 @@ export interface ProductDetail {
   comments: CommentItem[]
   appointment_count: number
   is_favorited: boolean
+  is_appointed: boolean
 }
 
 export interface MyProduct {
