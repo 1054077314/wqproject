@@ -1,11 +1,11 @@
-// API response wrapper
+// Object definitions matching API responses
+
 export interface ApiRes<T = unknown> {
   code: number
   message: string
   data: T
 }
 
-// Paginated response from DRF
 export interface PaginatedRes<T> {
   count: number
   next: string | null
@@ -13,14 +13,12 @@ export interface PaginatedRes<T> {
   results: T[]
 }
 
-// User
 export interface User {
   id: number
   username: string
   is_staff: boolean
 }
 
-// Product
 export interface ProductImage {
   id: number
   image: string
@@ -62,13 +60,11 @@ export interface MyProduct {
   created_at: string
 }
 
-// Category
 export interface Category {
   id: number
   name: string
 }
 
-// Comment
 export interface CommentItem {
   id: number
   content: string
@@ -76,17 +72,16 @@ export interface CommentItem {
   created_at: string
 }
 
-// Appointment
 export interface AppointmentItem {
   id: number
   product_id: number
   product_title: string
   product_price: string
   buyer_username: string
+  status: string
   created_at: string
 }
 
-// Favorite
 export interface FavoriteItem {
   id: number
   product_id: number
@@ -96,7 +91,6 @@ export interface FavoriteItem {
   created_at: string
 }
 
-// Admin
 export interface AdminUser {
   id: number
   username: string

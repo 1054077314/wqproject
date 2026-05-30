@@ -6,7 +6,7 @@ from rest_framework import status
 
 from apps.products.models import Product
 from .models import Appointment
-from .serializers import AppointmentCreateSerializer, AppointmentListSerializer
+from .serializers import AppointmentCreateSerializer, AppointmentListSerializer, AppointmentUpdateSerializer
 
 
 @api_view(["POST"])
@@ -67,3 +67,39 @@ def my_appointments_as_seller(request):
     page = paginator.paginate_queryset(appointments, request)
     ser = AppointmentListSerializer(page, many=True)
     return paginator.get_paginated_response(ser.data)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_appointment_status(request, pk):
+    try:
+        appointment = Appointment.objects.get(pk=pk)
+    except Appointment.DoesNotExist:
+        return Response(
+            {"code": 404, "message": "预约不存在", "data": None},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    if appointment.product.seller != request.user:
+        return Response(
+            {"code": 403, "message": "无权操作", "data": None},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    if appointment.status != "pending":
+        return Response(
+            {"code": 400, "message": "该预约已被处理", "data": None},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    ser = AppointmentUpdateSerializer(data=request.data)
+    ser.is_valid(raise_exception=True)
+    action = ser.validated_data["action"]
+
+    appointment.status = "confirmed" if action == "confirm" else "rejected"
+    appointment.save()
+
+    return Response(
+        {"code": 200, "message": "操作成功", "data": AppointmentListSerializer(appointment).data},
+        status=status.HTTP_200_OK,
+    )

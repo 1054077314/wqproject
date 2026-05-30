@@ -14,4 +14,8 @@ class AppointmentListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointment
-        fields = ["id", "product_id", "product_title", "product_price", "buyer_username", "created_at"]
+        fields = ["id", "product_id", "product_title", "product_price", "buyer_username", "status", "created_at"]
+
+
+class AppointmentUpdateSerializer(serializers.Serializer):
+    action = serializers.ChoiceField(choices=["confirm", "reject"])
